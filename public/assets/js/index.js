@@ -7,19 +7,23 @@ let noteList;
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
-  saveNoteBtn = document.querySelector('.save-note');
-  newNoteBtn = document.querySelector('.new-note');
-  noteList = document.querySelectorAll('.list-container .list-group');
+  saveNoteBtn = document.querySelector('.icons .save-note');
+  newNoteBtn = document.querySelector('.icons .new-note');
+  noteList = document.querySelector('.list-container .list-group');
 }
 
 // Show an element
 const show = (elem) => {
-  elem.style.display = 'inline';
+  if (elem) {
+    elem.style.display = 'inline';
+  }
 };
 
 // Hide an element
 const hide = (elem) => {
-  elem.style.display = 'none';
+  if (elem) {
+    elem.style.display = 'none';
+  }
 };
 
 // activeNote is used to keep track of the note in the textarea
@@ -119,11 +123,14 @@ const handleRenderSaveBtn = () => {
 // Render the list of note titles
 const renderNoteList = async (notes) => {
   let jsonNotes = await notes.json();
-  if (window.location.pathname === '/notes') {
-    noteList.forEach((el) => (el.innerHTML = ''));
+  console.log(jsonNotes); // Keep this line for debugging
+
+  if (window.location.pathname === '/notes' || window.location.pathname === '/notes/') {
+    noteList.innerHTML = '';
   }
 
   let noteListItems = [];
+
 
   // Returns HTML element with or without a delete button
   const createLi = (text, delBtn = true) => {
@@ -165,8 +172,10 @@ const renderNoteList = async (notes) => {
     noteListItems.push(li);
   });
 
-  if (window.location.pathname === '/notes') {
-    noteListItems.forEach((note) => noteList[0].append(note));
+  if (window.location.pathname === '/notes' || window.location.pathname === '/notes/') {
+    noteListItems.forEach((note) => {
+      noteList.append(note); // Changed this line
+    });
   }
 };
 
@@ -176,8 +185,7 @@ const getAndRenderNotes = () => getNotes().then(renderNoteList);
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
-  noteTitle.addEventListener('keyup', handleRenderSaveBtn);
-  noteText.addEventListener('keyup', handleRenderSaveBtn);
 }
+
 
 getAndRenderNotes();
